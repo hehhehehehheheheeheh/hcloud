@@ -1,4 +1,5 @@
 import type { NextAuthOptions, User } from "next-auth"
+import { getServerSession } from "next-auth"
 import Credentials from "next-auth/providers/credentials"
 import bcrypt from "bcryptjs"
 import { prisma } from "./prisma"
@@ -45,4 +46,8 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
   },
+}
+
+export async function auth() {
+  return getServerSession(authOptions)
 }
