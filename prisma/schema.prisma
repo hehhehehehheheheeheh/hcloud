@@ -1,0 +1,309 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  user
+  admin
+  support
+}
+
+enum TransactionType {
+  deposit
+  purchase_storage
+  purchase_item_storage
+  purchase_verified
+  insurance_premium
+  insurance_payout
+  admin_adjustment
+}
+
+enum ClaimStatus {
+  pending
+  approved
+  rejected
+}
+
+enum FileType {
+  file
+  document
+  image
+  video
+  audio
+  archive
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  passwordHash  String?
+  role          Role      @default(user)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts    Account[]
+  sessions    Session[]
+  folders     Folder[]
+  files       File[]
+  wallet      Wallet?
+  activities  Activity[]
+  claims      Claim[]
+  insurancePolicies InsurancePolicy[]
+  subscriptions     Subscription[]
+
+  @@map("users")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+model Folder {
+  id        String   @id @default(cuid())
+  name      String
+  parentId  String?
+  ownerId   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  parent   Folder?  @relation("FolderTree", fields: [parentId], references: [id], onDelete: Cascade)
+  children Folder[] @relation("FolderTree")
+  owner    User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  files    File[]
+
+  @@map("folders")
+}
+
+model File {
+  id             String    @id @default(cuid())
+  name           String
+  originalName   String
+  mimeType       String
+  size           Int
+  storageKey     String
+  checksumSha256 String
+  dedupRef       String?
+  version        Int       @default(1)
+  fileType       FileType  @default(file)
+  verifiedLevel  Int       @default(0)
+  ownerId        String
+  folderId       String?
+  trashedAt      DateTime?
+  expiresAt      DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  owner  User    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  folder Folder? @relation(fields: [folderId], references: [id], onDelete: SetNull)
+  versions FileVersion[]
+  shares  Share[]
+
+  @@index([ownerId])
+  @@index([checksumSha256])
+  @@map("files")
+}
+
+model FileVersion {
+  id             String   @id @default(cuid())
+  fileId         String
+  versionNumber  Int
+  size           Int
+  storageKey     String
+  checksumSha256 String
+  createdAt      DateTime @default(now())
+
+  file File @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  @@map("file_versions")
+}
+
+model Share {
+  id        String    @id @default(cuid())
+  fileId    String
+  sharedWithUserId String?
+  shareLink String?   @unique
+  password  String?
+  maxUses   Int?
+  uses      Int       @default(0)
+  permission String   @default("view")
+  isPublic  Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  expiresAt DateTime?
+
+  file      File      @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  @@map("shares")
+}
+
+model Activity {
+  id        String   @id @default(cuid())
+  userId    String
+  action    String
+  details   Json?
+  fileId    String?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("activities")
+}
+
+model StoragePackage {
+  id        String  @id @default(cuid())
+  name      String
+  type      String  @default("digital")
+  sizeMb    Int
+  priceSd   Int
+  verifiedLevel Int @default(0)
+  itemChests Int?   @default(0)
+  isActive  Boolean @default(true)
+  createdAt DateTime @default(now())
+
+  subscriptions Subscription[]
+  @@map("storage_packages")
+}
+
+model Subscription {
+  id           String   @id @default(cuid())
+  userId       String
+  packageId    String
+  type         String   @default("digital")
+  startDate    DateTime @default(now())
+  endDate      DateTime
+  autoRenew    Boolean  @default(false)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+
+  user    User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  package StoragePackage @relation(fields: [packageId], references: [id])
+
+  @@map("subscriptions")
+}
+
+model Wallet {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  balance   Int      @default(0)
+  lockedAmount Int   @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions WalletTransaction[]
+
+  @@map("wallets")
+}
+
+model WalletTransaction {
+  id           String          @id @default(cuid())
+  walletId     String
+  type         TransactionType
+  amount       Int
+  balanceAfter Int
+  referenceId  String?
+  description  String?
+  createdAt    DateTime        @default(now())
+
+  wallet Wallet @relation(fields: [walletId], references: [id], onDelete: Cascade)
+
+  @@index([walletId])
+  @@map("wallet_transactions")
+}
+
+model VerifiedLevel {
+  id           Int     @id @default(autoincrement())
+  level        Int     @unique
+  name         String
+  description  String
+  priceSd      Int
+  maxFiles     Int?
+  createdAt    DateTime @default(now())
+
+  @@map("verified_levels")
+}
+
+model InsurancePolicy {
+  id             String   @id @default(cuid())
+  userId         String
+  planName       String
+  pricePerMonth  Int
+  compensationPct Float
+  coefficient    Float
+  maxRecovery    Int?
+  voucherDesc    String?
+  voucherCount   Int?
+  isActive       Boolean  @default(true)
+  startDate      DateTime @default(now())
+  endDate        DateTime
+  createdAt      DateTime @default(now())
+
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  claims Claim[]
+
+  @@map("insurance_policies")
+}
+
+model Claim {
+  id              String      @id @default(cuid())
+  policyId        String
+  userId          String
+  fileId          String?
+  description     String
+  evidenceUrl     String?
+  claimedAmount   Int?
+  calculatedPayout Int?
+  status          ClaimStatus @default(pending)
+  reviewedBy      String?
+  reviewNote      String?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  policy InsurancePolicy @relation(fields: [policyId], references: [id])
+  user   User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("claims")
+}
