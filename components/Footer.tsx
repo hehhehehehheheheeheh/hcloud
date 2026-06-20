@@ -2,44 +2,53 @@ import Link from "next/link"
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-primary-dark text-white">
-      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="grid gap-8 md:grid-cols-4">
+    <footer className="border-t border-[#D2D2D7]/60 bg-[#1D1D1F] text-white">
+      <div className="mx-auto max-w-[1200px] px-6 py-12">
+        <div className="grid gap-10 md:grid-cols-4">
+          {/* Brand */}
           <div>
-            <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent">
-                <span className="text-sm font-bold text-primary-dark">H</span>
-              </div>
-              <span className="text-lg font-bold">HCloud</span>
-            </div>
-            <p className="mt-2 text-sm text-white/60">
-              Dịch vụ lưu trữ kỹ thuật số của Horizon Group. Vận hành trong hệ sinh thái Syreal.
+            <p className="text-[17px] font-semibold tracking-[-0.01em]">HCloud</p>
+            <p className="mt-2 text-[13px] leading-relaxed text-white/50">
+              Dịch vụ lưu trữ kỹ thuật số trực thuộc Horizon Group. Vận hành trong hệ sinh thái Syreal.
             </p>
           </div>
+
+          {/* Dịch vụ */}
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider">Dịch vụ</h3>
-            <ul className="mt-4 space-y-2">
-              <li><Link href="/pricing" className="text-sm text-white/60 transition-colors hover:text-white">Bảng giá</Link></li>
-              <li><Link href="/dashboard" className="text-sm text-white/60 transition-colors hover:text-white">Dashboard</Link></li>
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-white/40 mb-4">Dịch vụ</p>
+            <ul className="space-y-2">
+              <li><Link href="/pricing" className="text-[13px] text-white/60 hover:text-white transition-colors">Bảng giá</Link></li>
+              <li><Link href="/dashboard" className="text-[13px] text-white/60 hover:text-white transition-colors">Dashboard</Link></li>
+              <li><Link href="/dashboard/items" className="text-[13px] text-white/60 hover:text-white transition-colors">Rương vật phẩm</Link></li>
             </ul>
           </div>
+
+          {/* Pháp lý */}
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider">Pháp lý</h3>
-            <ul className="mt-4 space-y-2">
-              <li><Link href="/terms" className="text-sm text-white/60 transition-colors hover:text-white">Điều khoản sử dụng</Link></li>
-              <li><Link href="/privacy" className="text-sm text-white/60 transition-colors hover:text-white">Chính sách bảo mật</Link></li>
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-white/40 mb-4">Pháp lý</p>
+            <ul className="space-y-2">
+              <li><Link href="/terms" className="text-[13px] text-white/60 hover:text-white transition-colors">Điều khoản sử dụng</Link></li>
+              <li><Link href="/privacy" className="text-[13px] text-white/60 hover:text-white transition-colors">Chính sách bảo mật</Link></li>
             </ul>
           </div>
+
+          {/* Contact */}
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-wider">Liên hệ</h3>
-            <ul className="mt-4 space-y-2">
-              <li className="text-sm text-white/60">support@hcloud.syreal</li>
-              <li className="text-sm text-white/60">Horizon Group - Syreal Ecosystem</li>
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-white/40 mb-4">Liên hệ</p>
+            <ul className="space-y-2">
+              <li className="text-[13px] text-white/60">support@hcloud.syreal</li>
+              <li className="text-[13px] text-white/60">Horizon Group · Syreal Ecosystem</li>
             </ul>
           </div>
         </div>
-        <div className="mt-8 border-t border-white/10 pt-8 text-center text-sm text-white/40">
-          &copy; {new Date().getFullYear()} Horizon Group. All rights reserved. Bảo vệ dữ liệu hôm nay, kiến tạo niềm tin cho ngày mai.
+
+        <div className="mt-10 border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+          <p className="text-[12px] text-white/30">
+            © {new Date().getFullYear()} Horizon Group. All rights reserved.
+          </p>
+          <p className="text-[12px] text-white/30">
+            HCloud Protect · AES-256-GCM · Giám sát 24/7
+          </p>
         </div>
       </div>
     </footer>
