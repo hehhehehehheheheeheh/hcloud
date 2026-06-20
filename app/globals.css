@@ -1,31 +1,121 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: #ffffff;
-  --color-foreground: #0f172a;
-  --color-primary: #1e3a5f;
-  --color-primary-dark: #0f2440;
-  --color-primary-light: #2a5090;
-  --color-accent: #c8a84e;
-  --color-accent-light: #e8c86a;
-  --color-accent-dark: #a8882e;
-  --color-muted: #64748b;
-  --color-border: #e2e8f0;
-  --color-surface: #f8fafc;
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* ─── Font stack: SF Pro on Apple, Inter fallback everywhere ─── */
+  --font-sans: -apple-system, BlinkMacSystemFont, var(--font-inter), "Inter", ui-sans-serif, sans-serif;
+
+  /* ─── Colour tokens (light mode) ─── */
+  --color-background:       #FFFFFF;   /* bg-primary */
+  --color-surface:          #F5F5F7;   /* bg-secondary */
+  --color-foreground:       #1D1D1F;   /* text-primary  */
+  --color-muted:            #6E6E73;   /* text-secondary */
+  --color-primary:          #0A5C8C;   /* accent-trust — brand navy */
+  --color-primary-dark:     #073E61;
+  --color-primary-light:    #1470A8;
+  --color-accent:           #C9A04A;   /* accent-verified — gold, ONLY for L4-L5 badges */
+  --color-accent-light:     #DDB85A;
+  --color-accent-dark:      #A8852E;
+  --color-border:           #D2D2D7;
+
+  /* ─── Layout ─── */
+  --spacing-section:        96px;       /* min section gap desktop */
+  --max-width-content:      1200px;
+
+  /* ─── Border radius ─── */
+  --radius-sm:              8px;
+  --radius-card:            14px;
+  --radius-card-lg:         18px;
+  --radius-pill:            980px;      /* fully round button */
+
+  /* ─── Easing — iOS/macOS spring ─── */
+  --ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* ─── Animation durations ─── */
+  --duration-micro:         150ms;
+  --duration-fast:          250ms;
+  --duration-normal:        400ms;
+  --duration-hero:          700ms;
 }
 
+/* ─── Base ─── */
 body {
   background: var(--color-background);
   color: var(--color-foreground);
-  font-family: var(--font-sans, Arial, Helvetica, sans-serif);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-@layer utilities {
-  .bg-grid-pattern {
-    background-image: linear-gradient(rgba(30, 58, 95, 0.05) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(30, 58, 95, 0.05) 1px, transparent 1px);
-    background-size: 60px 60px;
+/* ─── Tabular numbers for prices / storage sizes ─── */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ─── Hero entrance animation ─── */
+@keyframes hero-enter {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-hero {
+  animation: hero-enter var(--duration-hero) var(--ease-spring) both;
+}
+
+/* ─── Scroll-reveal ─── */
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+}
+
+.reveal.revealed {
+  animation: reveal-up var(--duration-normal) var(--ease-spring) both;
+}
+
+/* ─── Topbar underline slide-in ─── */
+@keyframes underline-in {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+.nav-link-underline::after {
+  content: "";
+  display: block;
+  height: 1px;
+  background: var(--color-foreground);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--duration-micro) var(--ease-spring);
+}
+
+.nav-link-underline:hover::after,
+.nav-link-underline[aria-current="page"]::after {
+  transform: scaleX(1);
+}
+
+/* ─── Respect prefers-reduced-motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  .animate-hero,
+  .reveal,
+  .reveal.revealed {
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
 }

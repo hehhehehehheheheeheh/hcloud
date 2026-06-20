@@ -1,20 +1,17 @@
 import type { Metadata } from "next"
-import { Geist, Geist_Mono } from "next/font/google"
+import { Inter } from "next/font/google"
 import "./globals.css"
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-})
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+const inter = Inter({
+  subsets: ["latin", "vietnamese"],
+  variable: "--font-inter",
+  display: "swap",
 })
 
 export const metadata: Metadata = {
-  title: "HCloud - Horizon Cloud Storage",
-  description: "Niềm tin trong từng byte dữ liệu. Dịch vụ lưu trữ kỹ thuật số bảo mật của Horizon Group.",
+  title: "HCloud — Horizon Cloud Storage",
+  description:
+    "Niềm tin trong từng byte dữ liệu. Lưu trữ kỹ thuật số bảo mật, xác thực tài sản số HCloud Verified và bảo hiểm lưu trữ Shield Insurance — trực thuộc Horizon Group.",
 }
 
 export default function RootLayout({
@@ -23,8 +20,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="vi" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html lang="vi" className={`${inter.variable} h-full`}>
+      <body className="min-h-full flex flex-col antialiased">{children}</body>
     </html>
   )
 }
