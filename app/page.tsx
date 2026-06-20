@@ -124,7 +124,7 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <main className="flex-1">
+      <main id="main-content" className="flex-1">
 
         {/* ── Hero ── */}
         <section className="relative overflow-hidden bg-white px-6 pt-24 pb-20 md:pt-32 md:pb-28">
@@ -140,28 +140,22 @@ export default function Home() {
 
           <div className="relative mx-auto max-w-[1200px]">
             <div className="grid md:grid-cols-2 gap-12 items-center">
-              {/* Text */}
+              {/* Text — animates as a single unit */}
               <div className="animate-hero">
                 <p className="text-[13px] font-medium tracking-widest text-[#0A5C8C] uppercase mb-4">
                   Horizon Cloud · Hệ sinh thái Syreal
                 </p>
-                <h1
-                  className="text-[52px] leading-[1.06] font-semibold tracking-[-0.025em] text-[#1D1D1F] md:text-[64px]"
-                  style={{ animationDelay: "50ms" }}
-                >
+                <h1 className="text-[52px] leading-[1.06] font-semibold tracking-[-0.025em] text-[#1D1D1F] md:text-[64px]">
                   Niềm tin trong&nbsp;
                   <br className="hidden md:block" />
                   từng byte
                   <br />
                   dữ&nbsp;liệu.
                 </h1>
-                <p
-                  className="mt-6 text-[17px] leading-[1.55] text-[#6E6E73] max-w-md"
-                  style={{ animationDelay: "80ms" }}
-                >
+                <p className="mt-6 text-[17px] leading-[1.55] text-[#6E6E73] max-w-md">
                   Lưu trữ bảo mật, xác thực tài sản số HCloud Verified và bảo hiểm lưu trữ Shield — tất cả trong một hệ thống thanh toán SD.
                 </p>
-                <div className="mt-10 flex flex-wrap gap-3" style={{ animationDelay: "120ms" }}>
+                <div className="mt-10 flex flex-wrap gap-3">
                   <Link
                     href="/register"
                     className="inline-flex items-center rounded-[980px] bg-[#0A5C8C] px-6 py-3 text-[15px] font-medium text-white hover:bg-[#1470A8] hover:scale-[1.02] transition-all duration-150 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0A5C8C]"

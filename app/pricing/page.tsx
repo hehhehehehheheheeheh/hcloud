@@ -137,7 +137,7 @@ export default function PricingPage() {
   return (
     <>
       <Navbar />
-      <main className="flex-1 bg-white">
+      <main id="main-content" className="flex-1 bg-white">
 
         {/* Hero */}
         <section className="bg-[#F5F5F7] px-6 pt-24 pb-16 text-center">

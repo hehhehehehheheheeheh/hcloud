@@ -21,7 +21,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="vi" className={`${inter.variable} h-full`}>
-      <body className="min-h-full flex flex-col antialiased">{children}</body>
+      <body className="min-h-full flex flex-col antialiased">
+        {/* Skip to main content — keyboard accessibility */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-[8px] focus:bg-[#0A5C8C] focus:px-4 focus:py-2 focus:text-[14px] focus:font-medium focus:text-white focus:outline-none"
+        >
+          Chuyển đến nội dung chính
+        </a>
+        {children}
+      </body>
     </html>
   )
 }
